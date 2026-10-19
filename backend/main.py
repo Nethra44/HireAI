@@ -1,14 +1,23 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware # <--- 1. Import this
 from pypdf import PdfReader
 import io
 import os
 from dotenv import load_dotenv
 from google import genai
 
-# Load environment variables from the .env file
 load_dotenv()
 
 app = FastAPI(title="HireAI Backend", version="1.0")
+
+# --- 2. Add CORS Middleware here ---
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Allows our Next.js frontend
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
 
 # Securely retrieve the Gemini API key
 api_key = os.getenv("GEMINI_API_KEY")
